@@ -70,7 +70,7 @@ const sumP2Values = computed(() => {
     endvalue += straightCheck(5, 40);
     endvalue += ofaKindCheck(3, sumOfAllDice.value);
     endvalue += ofaKindCheck(4, sumOfAllDice.value);
-    endvalue += ofaKindCheck(5, sumOfAllDice.value);
+    endvalue += ofaKindCheck(5, 50);
     return endvalue;
 });
 
