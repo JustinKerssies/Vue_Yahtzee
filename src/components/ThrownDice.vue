@@ -23,7 +23,10 @@ const diceAmounts = () => {
     return count.value;
 };
 
-const straightCheck = straightlength => {
+const numberCheck = number => {
+    return count.value[number] * number;
+};
+const straightCheck = (straightlength, value) => {
     let flag = false;
     let counter = 0;
     for (let index = 1; index <= 6; index++) {
@@ -40,19 +43,43 @@ const straightCheck = straightlength => {
             break;
         }
     }
-    return counter == straightlength ? true : false;
+    return counter == straightlength ? value : 0;
 };
 
-const ofaKindCheck = ofakindamount => {
+const ofaKindCheck = (ofakindamount, value) => {
     for (let index = 1; index <= 6; index++) {
         if (count.value[index] >= ofakindamount) {
-            return true;
+            return value;
         }
     }
-    return false;
+    return 0;
 };
 
-const fullHouseCheck = computed(() => {
+const sumP1Values = computed(() => {
+    let endvalue = 0;
+    for (let index = 1; index <= 6; index++) {
+        endvalue += numberCheck(index);
+    }
+    return endvalue;
+});
+
+const sumP2Values = computed(() => {
+    let endvalue = 0;
+    endvalue += fullHouseCheck();
+    endvalue += straightCheck(4, 30);
+    endvalue += straightCheck(5, 40);
+    endvalue += ofaKindCheck(3, sumOfAllDice.value);
+    endvalue += ofaKindCheck(4, sumOfAllDice.value);
+    endvalue += ofaKindCheck(5, sumOfAllDice.value);
+    return endvalue;
+});
+
+const sumOfAllDice = computed(() => {
+    diceAmounts();
+    return diceArray.value.reduce((acc, item) => acc + item, 0);
+});
+
+const fullHouseCheck = () => {
     let flag2 = false;
     let flag3 = false;
     for (let index = 0; index <= 6; index++) {
@@ -63,79 +90,57 @@ const fullHouseCheck = computed(() => {
         }
     }
     return flag2 && flag3 ? 25 : 0;
-});
-
-const sumOfAllDice = computed(() => {
-    diceAmounts();
-    return diceArray.value.reduce((acc, item) => acc + item, 0);
-});
-
-const straight4Check = computed(() => {
-    if (straightCheck(4)) {
-        return 30;
-    }
-    return 0;
-});
-
-const straight5Check = computed(() => {
-    if (straightCheck(5)) {
-        return 40;
-    }
-    return 0;
-});
-
-const ofaKind3Check = computed(() => {
-    if (ofaKindCheck(3)) {
-        return sumOfAllDice;
-    }
-    return 0;
-});
-
-const ofaKind4Check = computed(() => {
-    if (ofaKindCheck(4)) {
-        return sumOfAllDice;
-    }
-    return 0;
-});
-
-const yatzhee = computed(() => {
-    if (ofaKindCheck(5)) {
-        return 50;
-    }
-    return 0;
-});
+};
 </script>
 <template>
-    <p>diceArray =>{{ diceArray }}</p>
-    <p>sum =>{{ sumOfAllDice }}</p>
     <table>
         <tr>
-            <th>name</th>
+            <th>P1 names</th>
+            <th>points</th>
+            <th>P2 names</th>
             <th>points</th>
         </tr>
         <tr>
+            <td>Ones</td>
+            <td>{{ numberCheck(1) }}</td>
             <td>FullHouse</td>
-            <td>{{ fullHouseCheck }}</td>
+            <td>{{ fullHouseCheck() }}</td>
         </tr>
         <tr>
+            <td>Twos</td>
+            <td>{{ numberCheck(2) }}</td>
             <td>FourStraight</td>
-            <td>{{ straight4Check }}</td>
+            <td>{{ straightCheck(4, 30) }}</td>
         </tr>
         <tr>
+            <td>Threes</td>
+            <td>{{ numberCheck(3) }}</td>
             <td>FiveStraight</td>
-            <td>{{ straight5Check }}</td>
+            <td>{{ straightCheck(5, 40) }}</td>
         </tr>
         <tr>
+            <td>Fours</td>
+            <td>{{ numberCheck(4) }}</td>
             <td>ThreeofaKind</td>
-            <td>{{ ofaKind3Check }}</td>
+            <td>{{ ofaKindCheck(3, sumOfAllDice) }}</td>
         </tr>
         <tr>
+            <td>Fives</td>
+            <td>{{ numberCheck(5) }}</td>
             <td>FourofaKind</td>
-            <td>{{ ofaKind4Check }}</td>
+            <td>{{ ofaKindCheck(4, sumOfAllDice) }}</td>
         </tr>
         <tr>
+            <td>Sixes</td>
+            <td>{{ numberCheck(6) }}</td>
             <td>Yathzee</td>
-            <td>{{ yatzhee }}</td>
+            <td>{{ ofaKindCheck(5, 50) }}</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td>{{ sumP1Values }}</td>
+            <td>Total</td>
+            <td>{{ sumP2Values }}</td>
         </tr>
     </table>
 </template>

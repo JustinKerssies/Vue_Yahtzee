@@ -1,7 +1,7 @@
 <script setup>
 import {ref, computed} from 'vue';
-import dice from './components/DiceComponent.vue';
-import pointvalue from './components/PointValueComponent.vue';
+import dice from './components/ScoreTable.vue';
+import pointvalue from './components/ThrownDice.vue';
 
 const currentDice = ref([]);
 const count = ref(0);
